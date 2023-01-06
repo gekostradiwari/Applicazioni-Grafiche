@@ -1,4 +1,4 @@
-package BankAccount;
+package MeasurableBankAccount;
 
 public class Coin implements Measurable {
 	
