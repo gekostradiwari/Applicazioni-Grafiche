@@ -30,6 +30,7 @@ public class Frame extends JFrame {
 	public Frame(String title, int x, int y) {
 		super(title);
 		this.setSize(x,y);
+		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setResizable(false);
