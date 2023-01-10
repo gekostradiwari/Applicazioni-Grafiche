@@ -1,7 +1,9 @@
 package CommercialistDB.CommercialistDB;
 
 import java.awt.GraphicsConfiguration;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.*;
 
 import javax.swing.JFrame;
 
