@@ -2,6 +2,10 @@ package CommercialistDB.CommercialistDB;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class StartFrame {
 	public StartFrame() {
@@ -25,7 +29,21 @@ public class StartFrame {
 		Switch.setFont(new Font("SwitchFont",Font.ITALIC + Font.BOLD,30));
 		option2.setBounds(250, 520, 500, 100);
 		option2.setFont(new Font("Option2Font",Font.ITALIC + Font.BOLD,20));
-		option2.addActionListener(studioList)
+		option2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addStudio studio = new addStudio("Aggiunta Studio",500,300);
+				mainPanel.setVisible(false);
+				studio.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						mainPanel.setVisible(true);
+						super.windowClosed(e);
+					}
+				});			
+			}			
+		});
 		//option1.setFont(new Font("Option1Font",Font.ITALIC + Font.BOLD,30));
 		System.out.println(option1.getBounds());
 		Panel.add(Title);

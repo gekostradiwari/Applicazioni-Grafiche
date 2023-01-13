@@ -33,7 +33,7 @@ public class Frame extends JFrame {
 		super(title);
 		this.setSize(x,y);
 		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 		this.setResizable(false);
 	}
