@@ -10,7 +10,7 @@ import java.awt.event.WindowEvent;
 public class StartFrame {
 	public StartFrame() {
 		String s1[] = {"prova1","prova2","prova3"};		
-		Frame mainPanel = new Frame("Start Panel - Business Consultant Manager",1000,800);
+		final Frame mainPanel = new Frame("Start Panel - Business Consultant Manager",1000,800);
 		JPanel Panel = new JPanel(null);
 		Panel.setSize(1000,900);
 		JLabel Title = new JLabel("<html>Business Consultant Manger <br/><br/>&emsp;&emsp;&emsp;&emsp;Start Menu <html>"); 
@@ -32,7 +32,7 @@ public class StartFrame {
 		option2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addStudio studio = new addStudio("Aggiunta Studio",500,300);
+				addStudio studio = new addStudio("Aggiunta Studio",500,250);
 				mainPanel.setVisible(false);
 				studio.addWindowListener(new WindowAdapter() {
 

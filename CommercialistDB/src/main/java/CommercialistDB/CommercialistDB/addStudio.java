@@ -5,9 +5,12 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.foreign.GroupLayout;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -20,29 +23,61 @@ public class addStudio extends Frame {
 	public addStudio(String title, int x, int y) {
 		super(title, x, y);
 		JPanel panel = new JPanel(new FlowLayout());
-		Frame cloned = this;
+		final Frame cloned = this;
 		panel.setSize(new Dimension(super.getSize()));
 		JLabel NomeStudio = new JLabel("Nome Studio: ");
 		JLabel IndirizzoStudio = new JLabel("Indirizzo di locazione: ");
 		JLabel RecapitoTelefonico = new JLabel("Numero di Telefono: ");
 		JButton Next = new JButton("Next");
+		JTextField Name = new JTextField();
+		JTextField Indirizzo = new JTextField();
+		JTextField Telefono = new JTextField();
+		JButton Back = new JButton("Back");
 		Next.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addCommercialista commercialista = new addCommercialista("Aggiunta Commercialista",500,300);
+				addCommercialista commercialista = new addCommercialista("Aggiunta Commercialista",500,500);
 				cloned.setVisible(false);				
 				commercialista.addWindowListener(new WindowAdapter() {
-
 					@Override
 					public void windowClosed(WindowEvent e) {	
 						cloned.setVisible(true);
 						super.windowClosed(e);
-					}				
-				});				
+					}	
+					
+				});		
+				commercialista.addComponentListener(new ComponentListener() {
+
+					@Override
+					public void componentResized(ComponentEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentMoved(ComponentEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentShown(ComponentEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentHidden(ComponentEvent e) {
+						Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
+						//IMPLEMENTAZIONE QUERY
+						commercialista.dispose();
+					}
+					
+				});
 			}			
 		});
-		JButton Back = new JButton("Back");
+		
 		Back.addActionListener(new ActionListener() {
 
 			@Override
@@ -50,9 +85,7 @@ public class addStudio extends Frame {
 				dispose();				
 			}			
 		});
-		JTextField Name = new JTextField();
-		JTextField Indirizzo = new JTextField();
-		JTextField Telefono = new JTextField();
+		
 		Name.setEditable(true);
 		Name.setPreferredSize(new Dimension(359,25));
 		Name.setAlignmentX(JTextField.RIGHT);
@@ -68,15 +101,20 @@ public class addStudio extends Frame {
 		panel.add(NomeStudio);
 		panel.add(Box.createHorizontalStrut(10));
 		panel.add(Name);
+		panel.add(Box.createVerticalStrut(50));
 		panel.add(IndirizzoStudio);
 		panel.add(Box.createHorizontalStrut(10));
 		panel.add(Indirizzo);
+		panel.add(Box.createVerticalStrut(50));
 		panel.add(RecapitoTelefonico);
 		panel.add(Box.createHorizontalStrut(10));
 		panel.add(Telefono);
+		panel.add(Box.createVerticalStrut(50));
 		panel.add(Back);
-		panel.add(Box.createHorizontalStrut(100));
+		panel.add(Box.createHorizontalStrut(300));
 		panel.add(Next);
 		super.add(panel); 
 	}
+
+	
 }
