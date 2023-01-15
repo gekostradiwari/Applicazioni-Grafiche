@@ -41,12 +41,13 @@ public class addStudio extends Frame {
 				cloned.setVisible(false);				
 				commercialista.addWindowListener(new WindowAdapter() {
 					@Override
-					public void windowClosed(WindowEvent e) {	
-						cloned.setVisible(true);
-						super.windowClosed(e);
-					}	
-					
-				});		
+					public void windowClosed(WindowEvent e) {
+							cloned.setVisible(true);
+							super.windowClosed(e);
+					}
+			
+				});	
+								
 				commercialista.addComponentListener(new ComponentListener() {
 
 					@Override
@@ -69,10 +70,11 @@ public class addStudio extends Frame {
 
 					@Override
 					public void componentHidden(ComponentEvent e) {
-						Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
+						final Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
 						//IMPLEMENTAZIONE QUERY
 						commercialista.dispose();
-					}
+						cloned.dispose();
+					}	
 					
 				});
 			}			

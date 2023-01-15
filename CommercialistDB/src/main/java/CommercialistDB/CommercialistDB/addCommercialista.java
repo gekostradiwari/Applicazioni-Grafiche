@@ -54,7 +54,7 @@ public class addCommercialista extends Frame {
 			public void actionPerformed(ActionEvent e) {
 				Commercialista c = new Commercialista(codiceFiscale.getText(),name.getText(),surname.getText(),Num1.getText(),Num2.getText(),Num3.getText());
 				//IMPLEMENTAZIONE QUERY
-				Cloned.dispose();
+				dispose();
 			}
 		});
 		panel.add(Nome);
