@@ -7,14 +7,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.lang.foreign.GroupLayout;
+//import java.lang.foreign.GroupLayout;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import jdk.incubator.vector.VectorOperators.Test;
+//import jdk.incubator.vector.VectorOperators.Test;
 
 import javax.swing.*;
 
@@ -47,6 +49,25 @@ public class addStudio extends Frame {
 					}
 			
 				});	
+				
+				commercialista.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						final Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
+						//IMPLEMENTAZIONE QUERY
+						commercialista.dispose();
+						cloned.dispose();
+						
+					}
+					
+				});
 								
 				commercialista.addComponentListener(new ComponentListener() {
 
@@ -70,10 +91,7 @@ public class addStudio extends Frame {
 
 					@Override
 					public void componentHidden(ComponentEvent e) {
-						final Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
-						//IMPLEMENTAZIONE QUERY
-						commercialista.dispose();
-						cloned.dispose();
+						
 					}	
 					
 				});

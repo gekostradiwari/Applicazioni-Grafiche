@@ -9,7 +9,9 @@ import java.awt.event.WindowEvent;
 
 public class StartFrame {
 	public StartFrame() {
-		String s1[] = {"prova1","prova2","prova3"};		
+		//Implementare il fetcheing degli studi
+		String s1[] = {"prova1","prova2","prova3"};	
+		//Implementare il fetcheing degli studi
 		final Frame mainPanel = new Frame("Start Panel - Business Consultant Manager",1000,800);
 		JPanel Panel = new JPanel(null);
 		Panel.setSize(1000,900);
@@ -18,6 +20,28 @@ public class StartFrame {
 		JLabel Switch = new JLabel("OPPURE");
 		JButton option2 = new JButton("Inserisci un nuovo studio");
 		JComboBox studioList = new JComboBox(s1);
+		studioList.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String s = (String)studioList.getSelectedItem();
+				OpFrame opPanel = new OpFrame(s+" "+"-"+" "+"Operations Pane",1000,800,s);
+				mainPanel.setVisible(false);
+				opPanel.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						mainPanel.setVisible(true);
+						super.windowClosed(e);
+					}
+					
+					
+				});
+				
+				
+			}
+			
+		});
 		Title.setBounds(0,0,1000,200);
 		Title.setHorizontalAlignment(SwingConstants.CENTER);
 		Title.setVerticalAlignment(SwingConstants.TOP);
