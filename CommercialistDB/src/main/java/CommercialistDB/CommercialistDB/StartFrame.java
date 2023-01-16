@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -63,9 +65,27 @@ public class StartFrame {
 					@Override
 					public void windowClosed(WindowEvent e) {
 						mainPanel.setVisible(true);
+						studio.dispose();
 						super.windowClosed(e);
 					}
-				});			
+				});	
+				studio.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						
+						studio.dispose();
+						System.out.println("ciaociao2");
+						
+					}
+					
+				});
 			}			
 		});
 		//option1.setFont(new Font("Option1Font",Font.ITALIC + Font.BOLD,30));
