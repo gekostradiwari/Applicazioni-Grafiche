@@ -36,6 +36,7 @@ public class Frame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 		this.setResizable(false);
+		
 	}
 
 }
