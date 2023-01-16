@@ -4,12 +4,14 @@ public class Studio {
 	private String nome;
 	private String Indirizzo;
 	private String RecapitoTelefonico; 
-	private static int ID = 0; //KEY
+	private static Integer ID = 0; //KEY
+	private int Id;
 	public Studio(String indirizzo, String recapitoTelefonico, String name) {
 		super();
 		Indirizzo = indirizzo;
 		RecapitoTelefonico = recapitoTelefonico;
 		nome = name;
+		Id = Studio.ID.intValue();
 		Studio.ID++;
 	}
 	public String getIndirizzo() {
@@ -25,16 +27,19 @@ public class Studio {
 		RecapitoTelefonico = recapitoTelefonico;
 	}
 	public int getID() {
-		return ID;
+		return Id;
 	}
 	public void setID(int iD) {
-		ID = iD;
+		Id = iD;
 	}
 	public String getNome() {
 		return nome;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	public void removeStudio() {
+		Studio.ID--;
 	}
 	@Override
 	public String toString() {

@@ -1,17 +1,22 @@
 package CommercialistDB.CommercialistDB;
 
 public class Cliente {
-	private static int ID = 0;
+	private static Integer ID = 0;
 	private String CodiceFiscale;
 	private String Indirizzo;
+	private int id;
 	public Cliente(String codiceFiscale, String indirizzo) {
 		super();
 		CodiceFiscale = codiceFiscale;
 		Indirizzo = indirizzo;
+		this.id = Cliente.getID();
 		ID++;
 	}
-	public static int getID() {
-		return ID;
+	private static int getID() {
+		return ID.intValue();
+	}
+	public int getId() {
+		return this.id;
 	}
 	public String getCodiceFiscale() {
 		return CodiceFiscale;

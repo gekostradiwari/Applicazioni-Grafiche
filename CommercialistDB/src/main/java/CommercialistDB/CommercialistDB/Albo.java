@@ -1,17 +1,17 @@
 package CommercialistDB.CommercialistDB;
 
 public class Albo {
-	private String Quota;
+	private double Quota;
 	private String CodiceIscrizione;
-	public Albo(String quota, String codiceIscrizione) {
+	public Albo(double quota, String codiceIscrizione) {
 		super();
 		Quota = quota;
 		CodiceIscrizione = codiceIscrizione;
 	}
-	public String getQuota() {
+	public double getQuota() {
 		return Quota;
 	}
-	public void setQuota(String quota) {
+	public void setQuota(double quota) {
 		Quota = quota;
 	}
 	public String getCodiceIscrizione() {

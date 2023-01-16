@@ -1,19 +1,22 @@
 package CommercialistDB.CommercialistDB;
 
+import java.util.ArrayList;
+
 public class Condominio extends Cliente {
 	private String Denominazione;
 	private int unitaAbitative;
-	private String Fornitori;
+	private ArrayList<String> Fornitori = new ArrayList<String>();
 	private double quoteCondominiali;
 	private String Indirizzi;
-	public Condominio(String codiceFiscale, String indirizzo, String den,int abitazioni,String fornito,double quote, String indirizzi) {
+	public Condominio(String codiceFiscale, String indirizzo, String den,int abitazioni,double quote, String indirizzi,String...forn) {
 		super(codiceFiscale, indirizzo);
 		// TODO Auto-generated constructor stub
 		this.Denominazione = den;
 		this.unitaAbitative = abitazioni;
-		this.Fornitori = fornito;
 		this.quoteCondominiali = quote;
 		this.Indirizzi = indirizzi;
+		for(String a : forn)
+			Fornitori.add(a);
 	}
 	public String getDenominazione() {
 		return Denominazione;
@@ -27,12 +30,15 @@ public class Condominio extends Cliente {
 	public void setUnitaAbitative(int unitaAbitative) {
 		this.unitaAbitative = unitaAbitative;
 	}
-	public String getFornitori() {
-		return Fornitori;
+	public void getFornitori() {
+		for(String s : this.Fornitori)
+			System.out.println(s);
 	}
-	public void setFornitori(String fornitori) {
-		Fornitori = fornitori;
+	public void setFornitori(String...s) {
+		for(String a : s)
+			this.Fornitori.add(a);
 	}
+
 	public double getQuoteCondominiali() {
 		return quoteCondominiali;
 	}
