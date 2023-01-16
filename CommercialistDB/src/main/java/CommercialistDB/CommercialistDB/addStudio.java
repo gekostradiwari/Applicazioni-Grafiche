@@ -61,16 +61,10 @@ public class addStudio extends Frame {
 					@Override
 					public void componentRemoved(ContainerEvent e) {
 						final Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
-						System.out.println("ciaociao");
 						//IMPLEMENTAZIONE QUERY
-						//commercialista.removeAll();
 						commercialista.dispose();
-						removeAll();
-						
-						
-						
-					}
-					
+						removeAll();			
+					}				
 				});
 								
 				commercialista.addComponentListener(new ComponentListener() {

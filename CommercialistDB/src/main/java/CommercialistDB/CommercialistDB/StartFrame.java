@@ -35,14 +35,9 @@ public class StartFrame {
 					public void windowClosed(WindowEvent e) {
 						mainPanel.setVisible(true);
 						super.windowClosed(e);
-					}
-					
-					
-				});
-				
-				
+					}					
+				});				
 			}
-			
 		});
 		Title.setBounds(0,0,1000,200);
 		Title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -78,18 +73,14 @@ public class StartFrame {
 					}
 
 					@Override
-					public void componentRemoved(ContainerEvent e) {
-						
+					public void componentRemoved(ContainerEvent e) {						
 						studio.dispose();
-						System.out.println("ciaociao2");
-						
 					}
 					
 				});
 			}			
 		});
 		//option1.setFont(new Font("Option1Font",Font.ITALIC + Font.BOLD,30));
-		System.out.println(option1.getBounds());
 		Panel.add(Title);
 		Panel.add(option1);
 		Panel.add(studioList);
