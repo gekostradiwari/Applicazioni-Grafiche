@@ -10,14 +10,13 @@ public class getConnection {
 		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection("jdbc:mysql://192.168.1.189:3306/BuisnessConsultantDB?user=remoteAdmin&password=toor");
-			System.out.println("Succesfully connected to the database.");
+			System.out.println("Connected to the Database.");
 			return conn;
 		} catch (SQLException e) {
-			System.out.println("Connection Failed");
+			// TODO Auto-generated catch block
+			System.out.println("Connection Failed.");
 			e.printStackTrace();
+			return null;
 		}
-		return null;
-
 	}
-
 }

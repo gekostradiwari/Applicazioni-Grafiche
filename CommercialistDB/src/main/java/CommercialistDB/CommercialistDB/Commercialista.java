@@ -66,8 +66,4 @@ public class Commercialista {
 	public void setId_studio(int id_studio) {
 		this.id_studio = id_studio;
 	}
-	
-	
-	
-	
 }

@@ -9,15 +9,23 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class StartFrame {
 	public StartFrame() {
 		Connection conn = getConnection.newConn();
-		//Implementare il fetcheing degli studi
-		String s1[] = {"prova1","prova2","prova3"};	
-		//Implementare il fetcheing degli studi
+		ArrayList <String> StudioList = new ArrayList<String>();
+		try {
+			CallableStatement cs = conn.prepareCall("{call FetchStudi}");
+			ResultSet rs = cs.executeQuery();
+			while(rs.next())
+				StudioList.add(rs.getString("nome"));
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		final Frame mainPanel = new Frame("Start Panel - Business Consultant Manager",1000,800);
 		JPanel Panel = new JPanel(null);
 		Panel.setSize(1000,900);
@@ -25,7 +33,7 @@ public class StartFrame {
 		JLabel option1 = new JLabel("Selezionare uno studio:");
 		JLabel Switch = new JLabel("OPPURE");
 		JButton option2 = new JButton("Inserisci un nuovo studio");
-		JComboBox studioList = new JComboBox(s1);
+		JComboBox  studioList = new JComboBox( StudioList.toArray());
 		studioList.addActionListener(new ActionListener() {
 
 			@Override
@@ -43,13 +51,39 @@ public class StartFrame {
 				});				
 			}
 		});
+		JButton refresh = new JButton("Refresh");
 		Title.setBounds(0,0,1000,200);
 		Title.setHorizontalAlignment(SwingConstants.CENTER);
 		Title.setVerticalAlignment(SwingConstants.TOP);
 		Title.setFont(new Font("TitleFont",Font.BOLD,50));
 		option1.setBounds(10, 250, 400, 100);
 		option1.setFont(new Font("Option1Font",Font.ITALIC + Font.BOLD,30));
-		studioList.setBounds(500, 286, 430, 30);
+		studioList.setBounds(350, 286, 430, 30);
+		refresh.setBounds(850, 286, 120, 30);
+		refresh.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				StudioList.removeAll(StudioList);
+				try {
+					CallableStatement cs = conn.prepareCall("{call FetchStudi}");
+					ResultSet rs = cs.executeQuery();
+					while(rs.next())
+						StudioList.add(rs.getString("nome"));
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				studioList.removeAllItems();
+				for(String s : StudioList)
+					studioList.addItem(s);
+				
+				
+			}
+			
+			
+		});
 		Switch.setBounds(420, 400, 200, 100);
 		Switch.setFont(new Font("SwitchFont",Font.ITALIC + Font.BOLD,30));
 		option2.setBounds(250, 520, 500, 100);
@@ -90,6 +124,7 @@ public class StartFrame {
 		Panel.add(studioList);
 		Panel.add(Switch);
 		Panel.add(option2);
+		Panel.add(refresh);
 		mainPanel.add(Panel,BorderLayout.CENTER);
 	}
 	
