@@ -35,20 +35,25 @@ public class StartFrame {
 		JButton option2 = new JButton("Inserisci un nuovo studio");
 		JComboBox  studioList = new JComboBox( StudioList.toArray());
 		studioList.addActionListener(new ActionListener() {
+			
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String s = (String)studioList.getSelectedItem();
-				OpFrame opPanel = new OpFrame(s+" "+"-"+" "+"Operations Pane",1000,1000,s);
-				mainPanel.setVisible(false);
-				opPanel.addWindowListener(new WindowAdapter() {
+				if(studioList.getSelectedItem() == null || e.getActionCommand().equals("don't select") == true) 
+					;
+				else {
+					String s = (String)studioList.getSelectedItem();
+					OpFrame opPanel = new OpFrame(s+" "+"-"+" "+"Operations Pane",1000,1000,s);
+					mainPanel.setVisible(false);
+					opPanel.addWindowListener(new WindowAdapter() {
 
-					@Override
-					public void windowClosed(WindowEvent e) {
-						mainPanel.setVisible(true);
-						super.windowClosed(e);
-					}					
-				});				
+						@Override
+						public void windowClosed(WindowEvent e) {
+							mainPanel.setVisible(true);
+							super.windowClosed(e);
+						}					
+					});		
+				}
 			}
 		});
 		JButton refresh = new JButton("Refresh");
@@ -76,10 +81,10 @@ public class StartFrame {
 					e1.printStackTrace();
 				}
 				studioList.removeAllItems();
+				studioList.setActionCommand("don't select");
 				for(String s : StudioList)
 					studioList.addItem(s);
-				
-				
+				studioList.setActionCommand(null);								
 			}
 			
 			
@@ -111,8 +116,8 @@ public class StartFrame {
 					}
 
 					@Override
-					public void componentRemoved(ContainerEvent e) {						
-						studio.dispose();
+					public void componentRemoved(ContainerEvent e) {
+							studio.dispose();
 					}
 					
 				});
