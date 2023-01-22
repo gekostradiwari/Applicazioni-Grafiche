@@ -97,7 +97,6 @@ public class OpFrame extends Frame {
 		op24.setPreferredSize(new Dimension(150,30));
 		op24.setMaximumSize(new Dimension(190,30));
 		
-		
 		panel.add(op1);
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(op2);

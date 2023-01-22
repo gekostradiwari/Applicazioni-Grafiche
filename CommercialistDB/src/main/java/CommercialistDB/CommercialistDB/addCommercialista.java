@@ -9,7 +9,7 @@ import javax.swing.*;
 
 public class addCommercialista extends Frame {
 
-	public addCommercialista(String title, int x, int y) {
+	public addCommercialista(String title, int x, int y,int id_studio) {
 		super(title, x, y);
 		JFrame Cloned = this;
 		JPanel panel = new JPanel(new FlowLayout());
@@ -52,7 +52,7 @@ public class addCommercialista extends Frame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Commercialista c = new Commercialista(codiceFiscale.getText(),name.getText(),surname.getText(),Num1.getText(),Num2.getText(),Num3.getText());
+				Commercialista c = new Commercialista(codiceFiscale.getText(),name.getText(),surname.getText(),id_studio,Num1.getText(),Num2.getText(),Num3.getText());
 				//IMPLEMENTAZIONE QUERY
 				removeAll();
 			}

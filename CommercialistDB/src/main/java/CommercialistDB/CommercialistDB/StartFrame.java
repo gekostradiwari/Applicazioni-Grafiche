@@ -1,6 +1,7 @@
 package CommercialistDB.CommercialistDB;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,9 +9,12 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.*;
 
 public class StartFrame {
 	public StartFrame() {
+		Connection conn = getConnection.newConn();
 		//Implementare il fetcheing degli studi
 		String s1[] = {"prova1","prova2","prova3"};	
 		//Implementare il fetcheing degli studi

@@ -36,10 +36,11 @@ public class addStudio extends Frame {
 		JTextField Telefono = new JTextField();
 		JButton Back = new JButton("Back");
 		Next.addActionListener(new ActionListener() {
-
+			//PASSARE ANCHE L'ID DELLO STUDIO PER L'AGGIUNTA DEL COMMERCIALISTA ALLO STUDIO APPENA CREATO
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addCommercialista commercialista = new addCommercialista("Aggiunta Commercialista",500,500);
+				Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
+				addCommercialista commercialista = new addCommercialista("Aggiunta Commercialista",500,500,s.getID());
 				cloned.setVisible(false);				
 				commercialista.addWindowListener(new WindowAdapter() {
 					@Override
@@ -60,7 +61,8 @@ public class addStudio extends Frame {
 
 					@Override
 					public void componentRemoved(ContainerEvent e) {
-						final Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
+						//final Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
+					    
 						//IMPLEMENTAZIONE QUERY
 						commercialista.dispose();
 						removeAll();			
