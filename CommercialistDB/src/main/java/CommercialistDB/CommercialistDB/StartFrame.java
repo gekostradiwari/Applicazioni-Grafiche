@@ -84,7 +84,7 @@ public class StartFrame {
 				studioList.setActionCommand("don't select");
 				for(String s : StudioList)
 					studioList.addItem(s);
-				studioList.setActionCommand(null);								
+				studioList.setActionCommand("Select");								
 			}
 			
 			
@@ -132,8 +132,4 @@ public class StartFrame {
 		Panel.add(refresh);
 		mainPanel.add(Panel,BorderLayout.CENTER);
 	}
-	
-	
-	
-
 }

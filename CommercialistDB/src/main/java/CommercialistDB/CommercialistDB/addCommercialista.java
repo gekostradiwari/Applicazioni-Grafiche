@@ -3,6 +3,9 @@ package CommercialistDB.CommercialistDB;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
@@ -54,6 +57,22 @@ public class addCommercialista extends Frame {
 			public void actionPerformed(ActionEvent e) {
 				Commercialista c = new Commercialista(codiceFiscale.getText(),name.getText(),surname.getText(),id_studio,Num1.getText(),Num2.getText(),Num3.getText());
 				//IMPLEMENTAZIONE QUERY
+				Connection conn = getConnection.newConn();
+				try {
+					CallableStatement cs = conn.prepareCall("{call insertCommercialista(?,?,?,?,?,?,?,?)}");
+					cs.setString(1, c.getCodiceFiscale());
+					cs.setString(2,c.getNome());
+					cs.setString(3, c.getCognome());
+					cs.setInt(4, c.getId_studio());
+					cs.setInt(5, c.getNumeroClienti());
+					cs.setString(6, c.getNumeriTelefono().get(0));
+					cs.setString(7, c.getNumeriTelefono().get(1));
+					cs.setString(8, c.getNumeriTelefono().get(2));
+					cs.execute();
+												
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 				removeAll();
 			}
 		});

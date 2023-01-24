@@ -1,10 +1,17 @@
 package CommercialistDB.CommercialistDB;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.sql.Statement;
+
 public class Studio {
 	private String nome;
 	private String Indirizzo;
 	private String RecapitoTelefonico; 
-	private static Integer ID = 0; //KEY
+	private static Integer ID =  getLastIDstudio.getID(); //KEY
 	private int Id;
 	public Studio(String indirizzo, String recapitoTelefonico, String name) {
 		super();
@@ -46,6 +53,4 @@ public class Studio {
 		System.out.println(this.getNome() + this.getIndirizzo() + this.getRecapitoTelefonico() + this.getID());
 		return super.toString();
 	}
-	
-
 }

@@ -11,6 +11,10 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 //import java.lang.foreign.GroupLayout;
 import java.util.ArrayList;
 
@@ -40,6 +44,19 @@ public class addStudio extends Frame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
+				Connection conn = getConnection.newConn();
+			try {
+					CallableStatement cs = conn.prepareCall("{call insertStudio(?,?,?,?)}");
+					cs.setInt(1, s.getID());
+					cs.setString(2,s.getNome());
+					cs.setString(3, s.getIndirizzo());
+					cs.setString(4, s.getRecapitoTelefonico());
+					cs.execute();
+												
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}	
 				addCommercialista commercialista = new addCommercialista("Aggiunta Commercialista",500,500,s.getID());
 				cloned.setVisible(false);				
 				commercialista.addWindowListener(new WindowAdapter() {
@@ -61,9 +78,7 @@ public class addStudio extends Frame {
 
 					@Override
 					public void componentRemoved(ContainerEvent e) {
-						//final Studio s = new Studio(Indirizzo.getText(),Telefono.getText(),Name.getText());
-					    
-						//IMPLEMENTAZIONE QUERY
+										    
 						commercialista.dispose();
 						removeAll();			
 					}				
