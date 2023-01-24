@@ -13,14 +13,16 @@ public class getLastIDstudio {
 			String query = "SELECT id FROM Studio";
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);			
-			while(rs.next()) {
-				if(rs.getBoolean(1) == false)
-					return id;
-				else
+			if(!rs.next())
+				return id;
+			else {
+				do {
 					id = rs.getInt(id);
+				}while(rs.next());
+				id++;
+				return id;
 			}
-			id++;
-			return id;	
+		
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 			return 0;
