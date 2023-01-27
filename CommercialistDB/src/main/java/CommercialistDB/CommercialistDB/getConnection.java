@@ -9,7 +9,7 @@ public class getConnection {
 	public static Connection newConn() {
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection("jdbc:mysql://192.168.1.190:3306/BuisnessConsultantDB?user=remoteAdmin&password=toor");
+			conn = DriverManager.getConnection("jdbc:mysql://192.168.1.189:3306/BuisnessConsultantDB?user=remoteAdmin&password=toor");
 			System.out.println("Connected to the Database.");
 			return conn;
 		} catch (SQLException e) {
