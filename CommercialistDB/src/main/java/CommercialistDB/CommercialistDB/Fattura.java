@@ -1,16 +1,16 @@
 package CommercialistDB.CommercialistDB;
 
 public class Fattura {
-	private static Integer Id = 0;
 	private String Data;
 	private double Importo;
-	private int id;
+	private static Integer ID =  getLastIDfattura.getID(); //KEY
+	private int Id;
 	public Fattura(String data, double importo) {
 		super();
 		Data = data;
 		Importo = importo;
-		id = Fattura.Id.intValue();
-		Id++;
+		Id = Fattura.ID.intValue();
+		Fattura.ID++;
 	}
 	public String getData() {
 		return Data;
@@ -25,10 +25,10 @@ public class Fattura {
 		Importo = importo;
 	}
 	public void deleteFattura() {
-		Id--;
+		Fattura.ID--;
 	}
 	public int getId() {
-		return this.id;
+		return this.Id;
 	}
 	
 

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Scrollbar;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -53,6 +55,15 @@ public class OpFrame extends Frame {
 		JButton op1 = new JButton("Emissione fattura");
 		op1.setPreferredSize(new Dimension(290,70));
 		op1.setMaximumSize(new Dimension(290,70));		
+		op1.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addFattura fattura = new addFattura();
+				
+			}
+			
+		});
 
 		JButton op2 = new JButton("<html>" + twoLines.replaceAll("\\n", "<br>") + "</html>");
 		op2.setPreferredSize(new Dimension(290,70));
