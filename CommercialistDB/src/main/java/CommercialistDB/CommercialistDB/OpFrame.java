@@ -6,6 +6,10 @@ import java.awt.Font;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -21,18 +25,18 @@ public class OpFrame extends Frame {
 	public OpFrame(String title,int x, int y,String nomeStudio) {
 		super(title,x,y);
 		this.nomeStudio = nomeStudio;
+		OpFrame clone = this;
 		setLayout(null);
-		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		panel.setBounds(10, 10, 320, 2000);
 		JScrollPane scrollbar = new JScrollPane(panel,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollbar.setBounds(10, 10, 320, 950);
+		scrollbar.setBounds(10, 10, 310, 950);
 		
 		
 		
 		JPanel panel2 = new JPanel(null);
-		panel2.setBounds(325, 10, 670, 1000);	
+		panel2.setBounds(320, 10, 670, 1000);	
 		JTextArea output = new JTextArea();
 		output.setBounds(0, 0, 670, 1000);
 		output.setEditable(false);
@@ -59,10 +63,34 @@ public class OpFrame extends Frame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				addFattura fattura = new addFattura();
+				addFattura fattura = new addFattura(nomeStudio);
+				clone.setVisible(false);
+				fattura.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						fattura.dispose();
+						super.windowClosed(e);
+					}
+				});
+				fattura.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						fattura.dispose();
+						output.setText("Fattura inserita con successo");
+					}
+					
+				});
 				
-			}
-			
+			}		
 		});
 
 		JButton op2 = new JButton("<html>" + twoLines.replaceAll("\\n", "<br>") + "</html>");
