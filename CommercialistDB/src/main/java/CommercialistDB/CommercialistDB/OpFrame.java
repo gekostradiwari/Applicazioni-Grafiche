@@ -45,13 +45,15 @@ public class OpFrame extends Frame {
 		
 		
 		JPanel panel2 = new JPanel(null);
-		panel2.setBounds(320, 10, 670, 1000);	
+		panel2.setBounds(320, 10, 100000, 100000);	
 		JTextArea output = new JTextArea();
-		output.setBounds(0, 0, 670, 1000);
+		output.setBounds(0, 0, 100000, 100000);
 		output.setEditable(false);
 		output.setBackground(Color.black);
 		output.setForeground(Color.green);
 		output.setFont(new Font("newFont", Font.BOLD + Font.ITALIC,20));
+		
+		
 		String twoLines = "Selezionare il numero di clienti \n di un determinato commercialista";
 		String twoLines1 ="Contabilizzazione certificazione\n unica";
 		String twoLines2 ="Calcolo fattura in base agli\n adempimenti commissionati dal cliente";
@@ -271,6 +273,50 @@ public class OpFrame extends Frame {
 		JButton op5 = new JButton("<html>" + twoLines1.replaceAll("\\n", "<br>") + "</html>");
 		op5.setPreferredSize(new Dimension(290,70));
 		op5.setMaximumSize(new Dimension(290,70));
+		op5.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				addCertificazioneUnica CU = new addCertificazioneUnica("Aggiunta CU",500,500,nomeStudio);
+				CU.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						CU.dispose();
+						super.windowClosed(e);
+					}
+				});	
+				CU.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						CU.dispose();
+						output.setText("Certificazione Unica inserita con successo:\n");
+						Connection conn = getConnection.newConn();
+						try {
+							CallableStatement cs = conn.prepareCall("SELECT * FROM CertificazioneUnica WHERE CertificazioneUnica.nome = ? AND CertificazioneUnica.cognome = ?");
+							cs.setString(1, CU.getNomeClient());
+							cs.setString(2, CU.getCognomeClient());
+							ResultSet CU = cs.executeQuery();
+							output.append("numCert"+"  "+"valCert"+"    "+"nome"+"    "+"cognome"+"\n");
+							while(CU.next())							
+								output.append(CU.getInt("numeroCertificazione")+"  "+CU.getDouble("valoreCertificazione")+"  "+CU.getString("nome")+"  "+CU.getString("cognome")+"\n");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}				
+				});
+			}			
+		}); 
 
 		JButton op6 = new JButton("Calcolo credito e debito IVA");
 		op6.setPreferredSize(new Dimension(290,70));
@@ -279,10 +325,6 @@ public class OpFrame extends Frame {
 		JButton op7 = new JButton("Calcolo spese detraibili");
 		op7.setPreferredSize(new Dimension(290,70));
 		op7.setMaximumSize(new Dimension(290,70));
-
-		JButton op8 = new JButton("<html>" + twoLines2.replaceAll("\\n", "<br>") + "</html>");
-		op8.setPreferredSize(new Dimension(290,70));
-		op8.setMaximumSize(new Dimension(290,70));
 
 		JButton op9 = new JButton("<html>" + twoLines3.replaceAll("\\n", "<br>") + "</html>");
 		op9.setPreferredSize(new Dimension(290,70));
@@ -359,8 +401,6 @@ public class OpFrame extends Frame {
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(op7);
 		panel.add(Box.createVerticalStrut(10));
-		panel.add(op8);
-		panel.add(Box.createVerticalStrut(10));
 		panel.add(op9);
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(op10);
@@ -396,11 +436,14 @@ public class OpFrame extends Frame {
 		
 		
 		panel2.add(output);
+		JScrollPane scrollbar2 = new JScrollPane(panel2,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollbar2.setBounds(320, 10, 790, 950);
+		scrollbar2.setEnabled(true);
 	
 		
 		add(scrollbar);
 		//add(panel);
-		add(panel2);	
+		add(scrollbar2);	
 	}
 	
 	

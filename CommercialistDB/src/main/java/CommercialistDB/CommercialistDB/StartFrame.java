@@ -43,7 +43,7 @@ public class StartFrame {
 					;
 				else {
 					String s = (String)studioList.getSelectedItem();
-					OpFrame opPanel = new OpFrame(s+" "+"-"+" "+"Operations Pane",1000,1000,s);
+					OpFrame opPanel = new OpFrame(s+" "+"-"+" "+"Operations Pane",1120,1000,s);
 					mainPanel.setVisible(false);
 					opPanel.addWindowListener(new WindowAdapter() {
 

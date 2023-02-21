@@ -1,25 +1,25 @@
 package CommercialistDB.CommercialistDB;
 
 public class CU {
-	private String ValoreCertificazione;
-	private int numeroCertificazione;
-	public CU(String valoreCertificazione, int numeroCertificazione) {
+	private double ValoreCertificazione;
+	private static Integer lasTnumeroCertificazione = getLastIDCU.getID();
+	private int idCU;
+	public CU(double valoreCertificazione) {
 		super();
 		this.ValoreCertificazione = valoreCertificazione;
-		this.numeroCertificazione = numeroCertificazione;
+		this.idCU = CU.lasTnumeroCertificazione.intValue();
+		CU.lasTnumeroCertificazione++;
 	}
-	public String getValoreCertificazione() {
+	public double getValoreCertificazione() {
 		return ValoreCertificazione;
 	}
-	public void setValoreCertificazione(String valoreCertificazione) {
+	public void setValoreCertificazione(double valoreCertificazione) {
 		ValoreCertificazione = valoreCertificazione;
 	}
 	public int getNumeroCertificazione() {
-		return numeroCertificazione;
+		return idCU;
 	}
-	public void setNumeroCertificazione(int numeroCertificazione) {
-		this.numeroCertificazione = numeroCertificazione;
-	}
+
 	
 	
 	
