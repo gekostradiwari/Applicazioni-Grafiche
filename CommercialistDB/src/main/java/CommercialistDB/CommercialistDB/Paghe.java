@@ -1,11 +1,16 @@
 package CommercialistDB.CommercialistDB;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Paghe extends Adempimento {
 	private int oreLavorative;
-	private int CertificatiMalattia;
+	private String CertificatiMalattia;
 	private String DataCedolino;
-	public Paghe(String codiceID, String descrizione, double prezzo, String dataScadenza, String dataInvio, int orelavoro, int certificatimalattia, String datacedolino) {
-		super(codiceID, descrizione, prezzo, dataScadenza, dataInvio);
+	public Paghe(String descrizione, double prezzo, String dataScadenza, String dataInvio, int orelavoro, String certificatimalattia, String datacedolino) {
+		super(descrizione, prezzo, dataScadenza, dataInvio);
 		// TODO Auto-generated constructor stub
 		this.oreLavorative = orelavoro;
 		this.CertificatiMalattia = certificatimalattia;
@@ -17,10 +22,10 @@ public class Paghe extends Adempimento {
 	public void setOreLavorative(int oreLavorative) {
 		this.oreLavorative = oreLavorative;
 	}
-	public int getCertificatiMalattia() {
+	public String getCertificatiMalattia() {
 		return CertificatiMalattia;
 	}
-	public void setCertificatiMalattia(int certificatiMalattia) {
+	public void setCertificatiMalattia(String certificatiMalattia) {
 		CertificatiMalattia = certificatiMalattia;
 	}
 	public String getDataCedolino() {
@@ -30,5 +35,7 @@ public class Paghe extends Adempimento {
 		DataCedolino = dataCedolino;
 	}
 	
+	
+
 
 }

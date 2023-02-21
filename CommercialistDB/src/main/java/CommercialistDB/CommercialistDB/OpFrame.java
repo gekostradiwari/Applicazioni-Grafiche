@@ -10,14 +10,23 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 public class OpFrame extends Frame {
@@ -85,7 +94,19 @@ public class OpFrame extends Frame {
 					@Override
 					public void componentRemoved(ContainerEvent e) {
 						fattura.dispose();
-						output.setText("Fattura inserita con successo");
+						output.setText("Fattura inserita con successo:\n");
+						Connection conn = getConnection.newConn();
+						try {
+							CallableStatement cs = conn.prepareCall("SELECT * FROM Fattura WHERE Fattura.Cliente_Intestata = ?");
+							cs.setInt(1, fattura.getIDclient());
+							ResultSet fatture = cs.executeQuery();
+							output.append("ID"+"  "+"Data"+"    "+"Imp"+"    "+"Commercialista"+"  "+"Cliente"+"\n");
+							while(fatture.next())							
+								output.append(fatture.getInt("numeroProgresivo")+"  "+fatture.getString("data")+"  "+fatture.getDouble("importo")+"  "+fatture.getString("Commercialista_Impiegato")+"  "+fatture.getInt("Cliente_Intestata")+"\n");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 					
 				});
@@ -96,14 +117,156 @@ public class OpFrame extends Frame {
 		JButton op2 = new JButton("<html>" + twoLines.replaceAll("\\n", "<br>") + "</html>");
 		op2.setPreferredSize(new Dimension(290,70));
 		op2.setMaximumSize(new Dimension(290,70));
+		op2.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				Frame selezionaCommercialista = new Frame("Seleziona Commercialista",600,500);
+				selezionaCommercialista.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						selezionaCommercialista.dispose();
+						super.windowClosed(e);
+					}
+				});
+				JPanel panel = new JPanel(null);
+				ArrayList<String> Commercialisti = new ArrayList<String>();
+				Connection conn =  getConnection.newConn();
+				try {
+					CallableStatement commercialisti = conn.prepareCall("SELECT nome,cognome FROM Commercialista WHERE Commercialista.id_studio = (SELECT id FROM Studio WHERE Studio.nome = ?)");
+					commercialisti.setString(1,nomeStudio);
+					ResultSet rs = commercialisti.executeQuery();
+					while(rs.next())
+						Commercialisti.add(rs.getString("nome")+","+rs.getString("cognome"));
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				JComboBox commercialistiList = new JComboBox(Commercialisti.toArray());
+				commercialistiList.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						clone.setVisible(false);
+						String nomeCompleto = (String) commercialistiList.getSelectedItem();
+						String[] nome = nomeCompleto.split(",");
+						String CF = "";
+						Connection conn = getConnection.newConn();
+						try {
+							CallableStatement tmp = conn.prepareCall("SELECT codiceFiscale FROM Commercialista WHERE Commercialista.nome = ? AND Commercialista.cognome = ?");
+							tmp.setString(1, nome[0]);
+							tmp.setString(2, nome[1]);
+							ResultSet rs = tmp.executeQuery();
+							if(!rs.next())
+								;
+							else
+								CF = rs.getString("codiceFiscale");
+						}catch(SQLException e1){
+							e1.printStackTrace();					
+						}
+						int  numeroClienti = 0;
+						try {
+							CallableStatement tmp1 = conn.prepareCall("{call SelezioneClienti(?)}");
+							tmp1.setString(1, CF);
+							ResultSet rc = tmp1.executeQuery();
+							if(!rc.next())
+								;
+							else
+							numeroClienti = rc.getInt("NumeroClienti");
+							output.setText(rc.getString("nome"));
+							output.append("  " + Integer.toString(numeroClienti));
+							selezionaCommercialista.dispose();
+							clone.setVisible(true);				
+						}catch(SQLException e1) {
+							e1.printStackTrace();
+						}
+						
+					}
+					
+				});
+				commercialistiList.setBounds(200, 90, 200, 50);
+				panel.add(commercialistiList);
+				selezionaCommercialista.add(panel);
+			}
+			
+		});
 
 		JButton op3 = new JButton("Stampa commercialisti");
 		op3.setPreferredSize(new Dimension(290,70));
 		op3.setMaximumSize(new Dimension(290,70));
+		op3.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Connection conn =  getConnection.newConn();
+				try {
+					CallableStatement commercialisti = conn.prepareCall("SELECT nome,cognome,codiceFiscale FROM Commercialista WHERE Commercialista.id_studio = (SELECT id FROM Studio WHERE Studio.nome = ?)");
+					commercialisti.setString(1,nomeStudio);
+					ResultSet rs = commercialisti.executeQuery();
+					output.setText("");
+					while(rs.next())
+						output.append(rs.getString("nome")+" , "+rs.getString("cognome") + " , "+rs.getString("codiceFiscale")+"\n");
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}				
+			}			
+		});
 
 		JButton op4 = new JButton("Contabilizzazione paghe");
 		op4.setPreferredSize(new Dimension(290,70));
 		op4.setMaximumSize(new Dimension(290,70));
+		op4.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				addPaga paga = new addPaga(nomeStudio);
+				paga.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						paga.dispose();
+						super.windowClosed(e);
+					}
+				});
+				paga.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						paga.dispose();
+						output.setText("Paga inserita con successo:\n");
+						Connection conn = getConnection.newConn();
+						try {
+							CallableStatement cs = conn.prepareCall("SELECT * FROM Paghe WHERE  Paghe.codiceidentificativo = ?");
+							cs.setInt(1, paga.getIDadempimento());
+							ResultSet fatture = cs.executeQuery();
+							output.append("ID"+"  "+"OreLav"+"    "+"CertificatiMalattia"+"    "+"dataCedolino"+"  "+"CodID"+"  "+"Prezzo"+"\n");
+							while(fatture.next())							
+								output.append(fatture.getInt("ID")+"  "+fatture.getInt("OreLavorative")+"  "+fatture.getString("certificatiDiMalattia")+"  "+fatture.getString("dataCedolino")+"  "+fatture.getInt("codiceidentificativo")+"  "+ fatture.getDouble("Prezzo")+"\n");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					
+				});
+			}
+			
+		});
+		
 
 		JButton op5 = new JButton("<html>" + twoLines1.replaceAll("\\n", "<br>") + "</html>");
 		op5.setPreferredSize(new Dimension(290,70));

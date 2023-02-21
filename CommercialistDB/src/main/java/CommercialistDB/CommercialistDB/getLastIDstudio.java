@@ -17,7 +17,7 @@ public class getLastIDstudio {
 				return id;
 			else {
 				do {
-					id = rs.getInt(id);
+					id = rs.getInt("id");
 				}while(rs.next());
 				id++;
 				return id;

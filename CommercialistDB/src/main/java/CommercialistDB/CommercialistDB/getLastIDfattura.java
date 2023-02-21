@@ -1,5 +1,6 @@
 package CommercialistDB.CommercialistDB;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,14 +11,13 @@ public class getLastIDfattura {
 		Connection conn = getConnection.newConn();
 		int id = 1;
 		try {
-			String query = "SELECT numeroProgresivo FROM Fattura";
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);			
+			CallableStatement cs = conn.prepareCall("SELECT numeroProgresivo FROM Fattura");
+			ResultSet rs = cs.executeQuery();			
 			if(!rs.next())
 				return id;
 			else {
 				do {
-					id = rs.getInt(id);
+					id = rs.getInt("numeroProgresivo");
 				}while(rs.next());
 				id++;
 				return id;

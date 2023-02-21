@@ -1,6 +1,7 @@
 package CommercialistDB.CommercialistDB;
 
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
@@ -15,24 +16,28 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
-
-public class addFattura extends Frame {
+public class addPaga extends Frame {
 	public String CFcommercialista;
 	public int IDclient;
-
-	public addFattura(String nomeStudio) {
-		super("Aggiunta Fattura",500,500);
+	public int IDadempimento;
+	public addPaga(String nomeStudio) throws HeadlessException {
+		super("Aggiunta Paga",500,500);
 		ArrayList<String> Commercialisti = new ArrayList<String>();
 		ArrayList<String> Clienti = new ArrayList<String>();
 		JPanel panel = new JPanel(null);
 		
-		JLabel date = new JLabel("Data Emissione: ");
+		JLabel date = new JLabel("Data Invio: ");
 		JTextField data = new JTextField();
-		JLabel importo = new JLabel("Importo: ");
-		JLabel Importo = new JLabel("0");
+		JLabel dataScadenza = new JLabel("Data Scadenza: ");
+		JTextField DataScadenza = new JTextField();
 		JLabel SelezioneCommercialista = new JLabel("Seleziona commercialista: ");
 		JLabel SelezionaCliente = new JLabel("Seleziona cliente: ");
+		JLabel oreLav = new JLabel("Inserire Ore Lavorative: ");
+		JTextField OreLav = new JTextField();
+		JLabel CertificatoDiMalattia = new JLabel("Inserire Cert. malattia: ");
+		JTextField certificatoDiMalattia = new JTextField();
+		JLabel dataCedolino = new JLabel("Inserisci data cedolino: ");
+		JTextField DataCedolino = new JTextField();
 		JButton Inserisci = new JButton("Inserisci!");
 		Connection conn =  getConnection.newConn();
 		try {
@@ -76,11 +81,11 @@ public class addFattura extends Frame {
 					e1.printStackTrace();
 				}
 				try {
-					CallableStatement clienti = conn.prepareCall("SELECT codiceFiscale FROM Cliente WHERE Cliente.Commercialista_Riferimento = ?");
+					CallableStatement clienti = conn.prepareCall("SELECT codiceFiscale,id FROM Cliente WHERE Cliente.Commercialista_Riferimento = ?");
 					clienti.setString(1, CF);
 					ResultSet rs = clienti.executeQuery();
 						while(rs.next()) 
-							Clienti.add(rs.getString("codiceFiscale"));
+							Clienti.add(rs.getString("codiceFiscale")+","+rs.getString("id"));
 					for(String a : Clienti)
 						ClientiListi.addItem(a);
 					
@@ -119,26 +124,7 @@ public class addFattura extends Frame {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
-				try {
-					CallableStatement importo = conn.prepareCall("SELECT SUM(Contabilità.Prezzo) + SUM(DDIVA.Prezzo)+SUM(DDR.Prezzo)+SUM(Imu.Prezzo)+SUM(Paghe.Prezzo) AS Importo FROM Contabilità,DDIVA,DDR,Imu,Paghe WHERE Contabilità.codiceidentificativo = ? OR DDIVA.codiceidentificativo = ? OR DDR.codiceidentificativo = ? OR Imu.codiceidentificativo = ? OR Paghe.codiceidentificativo = ?");
-					importo.setInt(1, IDadempimento);
-					importo.setInt(2, IDadempimento);
-					importo.setInt(3, IDadempimento);
-					importo.setInt(4, IDadempimento);
-					importo.setInt(5, IDadempimento);
-					ResultSet rimporto = importo.executeQuery();
-						if(!rimporto.next())
-							;
-						else {
-							double imp;
-							imp = rimporto.getDouble("Importo");
-							Importo.setText(Double.toString(imp));
-						}				
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				}			
 			}
 			
 		});
@@ -146,49 +132,82 @@ public class addFattura extends Frame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Fattura fattura = new Fattura(data.getText(),Double.parseDouble(Importo.getText())) ;
+				Paghe paghe = new Paghe("Paga",1,DataScadenza.getText(),data.getText(),Integer.parseInt(OreLav.getText()),certificatoDiMalattia.getText(),DataCedolino.getText());
+				IDadempimento  = paghe.getCodiceID();
 				Connection conn = getConnection.newConn();
 				try {
-						CallableStatement cs = conn.prepareCall("{call EmissioneFattura(?,?,?,?,?)}");
-						cs.setInt(1, fattura.getId());
-						cs.setString(2,fattura.getData());
-						cs.setDouble(3, fattura.getImporto());
-						cs.setString(4, CFcommercialista);
-						cs.setInt(5, IDclient);
+						CallableStatement fr = conn.prepareCall("INSERT INTO Adempimento(codiceidentificativo,dataInvio,dataScadenza,descrizione,Commercialista_ID) VALUES(?,?,?,?,?)");
+						fr.setInt(1, paghe.getCodiceID());
+						fr.setString(2, paghe.getDataInvio());
+						fr.setString(3, paghe.getDataScadenza());
+						fr.setString(4, paghe.getDescrizione());
+						fr.setString(5, CFcommercialista);
+						fr.execute();
+						CallableStatement cs = conn.prepareCall("INSERT INTO Paghe(ID,OreLavorative,certificatiDiMalattia,dataCedolino,codiceidentificativo,Prezzo) VALUES(?,?,?,?,?,?)");
+						cs.setInt(1, paghe.getCodiceID());
+						cs.setInt(2,paghe.getOreLavorative());
+						cs.setString(3,paghe.getCertificatiMalattia());
+						cs.setString(4, paghe.getDataCedolino());
+						cs.setInt(5, paghe.getCodiceID());
+						cs.setDouble(6, paghe.getPrezzo());
 						cs.execute();
-						CallableStatement cc = conn.prepareCall("INSERT INTO Cliente(Fattura_Attribuita) VALUES (?) WHERE Cliente.id = IDclient");
-						cc.setInt(1, fattura.getId());
+						CallableStatement cc = conn.prepareCall("INSERT INTO Riferisce(IDadempimento,IDcliente) VALUES (?,?)");
+						cc.setInt(1, paghe.getCodiceID());
+						cc.setInt(2, IDclient);
 						removeAll();
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}
-				
+					}	
 			}
-			
 		});
 		
+		/*JLabel date = new JLabel("Data Invio: ");
+		JTextField data = new JTextField();
+		JLabel dataScadenza = new JLabel("Data Scadenza: ");
+		JTextField DataScadenza = new JTextField();
+		JLabel SelezioneCommercialista = new JLabel("Seleziona commercialista: ");
+		JLabel SelezionaCliente = new JLabel("Seleziona cliente: ");
+		JLabel oreLav = new JLabel("Inserire Ore Lavorative: ");
+		JTextField OreLav = new JTextField();
+		JLabel CertificatoDiMalattia = new JLabel("Inserire certificato di malattia: ");
+		JTextField certificatoDiMalattia = new JTextField();
+		JLabel dataCedolino = new JLabel("Inserisci data cedolino: ");
+		JTextField DataCedolino = new JTextField();
+		JButton Inserisci = new JButton("Inserisci!");*/
+		
 		date.setFont(new Font("Date Font",Font.BOLD,20));
-		date.setBounds(10, 250, 170, 30);
-		data.setBounds(210, 250, 230, 30);
+		date.setBounds(10, 100, 170, 30);
+		data.setBounds(280, 100, 200, 30);
+		dataScadenza.setFont(date.getFont());
+		dataScadenza.setBounds(10, 150, 200, 30);
+		DataScadenza.setBounds(280, 150, 200, 30);
+		oreLav.setFont(date.getFont());
+		oreLav.setBounds(10, 200, 250, 30);
+		OreLav.setBounds(280, 200, 200, 30);
+		CertificatoDiMalattia.setFont(date.getFont());
+		CertificatoDiMalattia.setBounds(10, 250, 250, 30);
+		certificatoDiMalattia.setBounds(280, 250, 200, 30);
+		dataCedolino.setFont(date.getFont());
+		dataCedolino.setBounds(10, 300, 250, 30);
+		DataCedolino.setBounds(280, 300, 200, 30);
 		SelezioneCommercialista.setFont(new Font("commercialist",Font.BOLD,20));
 		SelezioneCommercialista.setBounds(10, 10, 270, 50);
 		CommercialistiList.setBounds(280, 20, 200, 30);
 		SelezionaCliente.setFont(new Font("Selezione CLiente",Font.BOLD,20));
 		SelezionaCliente.setBounds(10, 50, 250, 50);
 		ClientiListi.setBounds(280, 60, 200, 30);
-		
-		importo.setBounds(10, 282, 170,50);
-		importo.setFont(new Font("Font Importo",Font.BOLD,20));
-		Importo.setBounds(210,	 290, 230, 30);
-		Importo.setFont(importo.getFont());
 		Inserisci.setBounds(165, 350, 150, 50);
-		Inserisci.setFont(importo.getFont());
-		
-		panel.add(importo);
-		panel.add(Importo);
+		panel.add(dataCedolino);
+		panel.add(DataCedolino);
+		panel.add(CertificatoDiMalattia);
+		panel.add(certificatoDiMalattia);
 		panel.add(date);
 		panel.add(data);
+		panel.add(dataScadenza);
+		panel.add(DataScadenza);
+		panel.add(oreLav);
+		panel.add(OreLav);
 		panel.add(SelezioneCommercialista);
 		panel.add(CommercialistiList);
 		panel.add(SelezionaCliente);
@@ -196,14 +215,17 @@ public class addFattura extends Frame {
 		panel.add(Inserisci);
 		add(panel);
 	}
-
 	public String getCFcommercialista() {
 		return CFcommercialista;
 	}
-
 	public int getIDclient() {
 		return IDclient;
 	}
+	public int getIDadempimento() {
+		return IDadempimento;
+	}
+	
+	
 	
 	
 	

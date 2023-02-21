@@ -3,8 +3,8 @@ package CommercialistDB.CommercialistDB;
 public class DDIVA extends Adempimento {
 	private double ImportoIVAacquisti;
 	private double ImportoIVAvendite;
-	public DDIVA(String codiceID, String descrizione, double prezzo, String dataScadenza, String dataInvio,double IVAacquisti, double IVAvendite) {
-		super(codiceID, descrizione, prezzo, dataScadenza, dataInvio);
+	public DDIVA(String descrizione, double prezzo, String dataScadenza, String dataInvio,double IVAacquisti, double IVAvendite) {
+		super(descrizione, prezzo, dataScadenza, dataInvio);
 		// TODO Auto-generated constructor stub
 		this.ImportoIVAacquisti = IVAacquisti;
 		this.ImportoIVAvendite = IVAvendite;

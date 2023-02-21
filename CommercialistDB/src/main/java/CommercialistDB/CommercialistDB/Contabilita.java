@@ -8,8 +8,8 @@ public class Contabilita extends Adempimento {
 	private double IncassiCliente;
 	
 
-	public Contabilita(String codiceID, String descrizione, double prezzo, String dataScadenza, String dataInvio, double IVA,double tasse,double contributi,double pagamentiFornitori,double incassiCliente) {
-		super(codiceID, descrizione, prezzo, dataScadenza, dataInvio);
+	public Contabilita(String descrizione, double prezzo, String dataScadenza, String dataInvio, double IVA,double tasse,double contributi,double pagamentiFornitori,double incassiCliente) {
+		super(descrizione, prezzo, dataScadenza, dataInvio);
 		// TODO Auto-generated constructor stub
 		this.IVA = IVA;
 		this.PagamentoTasse = tasse;
