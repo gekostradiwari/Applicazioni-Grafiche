@@ -45,13 +45,15 @@ public class OpFrame extends Frame {
 		
 		
 		JPanel panel2 = new JPanel(null);
-		panel2.setBounds(320, 10, 100000, 100000);	
+		panel2.setBounds(320, 10, 5000, 5000);	
 		JTextArea output = new JTextArea();
-		output.setBounds(0, 0, 100000, 100000);
+		output.setBounds(0, 0, 4900, 4900);
 		output.setEditable(false);
 		output.setBackground(Color.black);
 		output.setForeground(Color.green);
 		output.setFont(new Font("newFont", Font.BOLD + Font.ITALIC,20));
+		panel2.setPreferredSize(new Dimension(5000,5000));
+		output.setPreferredSize(new Dimension(4900,4900));
 		
 		
 		String twoLines = "Selezionare il numero di clienti \n di un determinato commercialista";
