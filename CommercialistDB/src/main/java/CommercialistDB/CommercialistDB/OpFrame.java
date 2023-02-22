@@ -47,7 +47,7 @@ public class OpFrame extends Frame {
 		JPanel panel2 = new JPanel(null);
 		panel2.setBounds(320, 10, 5000, 5000);	
 		JTextArea output = new JTextArea();
-		output.setBounds(0, 0, 4900, 4900);
+		output.setBounds(0, 0, 5000, 5000);
 		output.setEditable(false);
 		output.setBackground(Color.black);
 		output.setForeground(Color.green);
@@ -323,6 +323,39 @@ public class OpFrame extends Frame {
 		JButton op6 = new JButton("Calcolo credito e debito IVA");
 		op6.setPreferredSize(new Dimension(290,70));
 		op6.setMaximumSize(new Dimension(290,70));
+		op6.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				calcoloIVA calcoloiva = new calcoloIVA("Calcolo IVA",500,500,nomeStudio);
+				calcoloiva.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						calcoloiva.dispose();
+						super.windowClosed(e);
+					}
+				});	
+				calcoloiva.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						calcoloiva.dispose();
+						output.setText("Calcolo IVA avvenuto con successo:\n");						
+						output.append("PartitaIVA"+"  "+"CalcoloIVA"+"\n");
+						output.append(calcoloiva.getNomeClient()+"  "+calcoloiva.getCalcoloIVA()+"\n");
+					}				
+				});			
+			}			
+		});
 
 		JButton op7 = new JButton("Calcolo spese detraibili");
 		op7.setPreferredSize(new Dimension(290,70));
