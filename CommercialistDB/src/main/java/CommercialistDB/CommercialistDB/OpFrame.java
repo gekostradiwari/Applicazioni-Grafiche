@@ -264,11 +264,9 @@ public class OpFrame extends Frame {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-					}
-					
+					}				
 				});
-			}
-			
+			}	
 		});
 		
 
@@ -360,59 +358,152 @@ public class OpFrame extends Frame {
 		JButton op7 = new JButton("Calcolo spese detraibili");
 		op7.setPreferredSize(new Dimension(290,70));
 		op7.setMaximumSize(new Dimension(290,70));
+		op7.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				calcoloSpeseDetraibili calc = new calcoloSpeseDetraibili("Calcolo Detrazione",500,500,nomeStudio);
+				calc.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						calc.dispose();
+						super.windowClosed(e);
+					}
+				});	
+				calc.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						calc.dispose();
+						output.setText("Calcolo Detrazione avvenuto con successo:\n");						
+						output.append("nome"+"  "+"cognome"+"  "+"detrazioni"+"\n");
+						output.append(calc.getNomeClient()+"  "+calc.getCognomeClient()+"  "+calc.getDetrazioni()+"\n");
+					}				
+				});
+			}
+			
+		});
 
 		JButton op9 = new JButton("<html>" + twoLines3.replaceAll("\\n", "<br>") + "</html>");
 		op9.setPreferredSize(new Dimension(290,70));
 		op9.setMaximumSize(new Dimension(290,70));
-		JButton op10 = new JButton("Elaborazione cedolini paghe");
-		op10.setPreferredSize(new Dimension(290,70));
-		op10.setMaximumSize(new Dimension(290,70));
+		op9.addActionListener(new ActionListener() {
 
-		JButton op11 = new JButton("<html>" + twoLines4.replaceAll("\\n", "<br>") + "</html>");
-		op11.setPreferredSize(new Dimension(290,70));
-		op11.setMaximumSize(new Dimension(290,70));
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				addDDIVA iva = new addDDIVA("Invio DDIVA",500,500,nomeStudio);
+				iva.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						iva.dispose();
+						super.windowClosed(e);
+					}
+				});
+				iva.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						Connection conn = getConnection.newConn();
+						try {
+							CallableStatement cs = conn.prepareCall("SELECT * FROM DDIVA WHERE DDIVA.ID = ?");
+							cs.setInt(1, iva.getIdAdempimento());
+							ResultSet rs = cs.executeQuery();
+							output.setText("DDIVA inserita con successo:\n");						
+							output.append("IVA Vendite"+"  "+"IVA Acquisti"+"\n");
+							output.append(rs.getDouble("ivaVendite")+"  "+rs.getDouble("ivaAcquisti")+"\n");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						iva.dispose();						
+					}				
+				});		
+			}		
+		});
+		
 
 		JButton op12 = new JButton("<html>" + twoLines5.replaceAll("\\n", "<br>") + "</html>");
 		op12.setPreferredSize(new Dimension(290,70));
 		op12.setMaximumSize(new Dimension(290,70));
+		op12.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				output.setText("Reddito calcolato con successo:\n");						
+				output.append("PartitaIVA"+"  "+"ID"+"  "+"Reddito"+"\n");
+				Connection conn = getConnection.newConn();
+				try {
+					CallableStatement cs = conn.prepareCall("{call CalcoloRedditiFabbricati()}");
+					ResultSet rs = cs.executeQuery();
+					output.append(rs.getString("partitaIva")+"  "+rs.getInt("id")+"  "+rs.getDouble("SUM(DDR.redditoFabbricati")+"\n");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}			
+			}		
+		});
 		JButton op13 = new JButton("Registrazione cliente");
 		op13.setPreferredSize(new Dimension(290,70));
 		op13.setMaximumSize(new Dimension(290,70));
+		op13.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				registrazioneCliente cliente = new registrazioneCliente("Registrazione Cliente",500,500,nomeStudio);
+				cliente.addWindowListener(new WindowAdapter() {
 
-		JButton op14 = new JButton("Registrazione fatture A / V");
-		op14.setPreferredSize(new Dimension(290,70));
-		op14.setMaximumSize(new Dimension(290,70));
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						cliente.dispose();
+						super.windowClosed(e);
+					}
+				});
+				cliente.addContainerListener(new ContainerListener() {
 
-		JButton op15 = new JButton("Registrazione acquisti");
-		op15.setPreferredSize(new Dimension(290,70));
-		op15.setMaximumSize(new Dimension(290,70));
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
 
-		JButton op16 = new JButton("Registrazione vendite");
-		op16.setPreferredSize(new Dimension(290,70));
-		op16.setMaximumSize(new Dimension(290,70));
-
-		JButton op17 = new JButton("Registrazione pagamenti fornitori");
-		op17.setPreferredSize(new Dimension(290,70));
-		op17.setMaximumSize(new Dimension(290,70));
-
-		JButton op18 = new JButton("<html>" + twoLines6.replaceAll("\\n", "<br>") + "</html>");
-		op18.setPreferredSize(new Dimension(290,70));
-		op18.setMaximumSize(new Dimension(290,70));
-		JButton op19 = new JButton("Inserimento fabbricati e terreni");
-		op19.setPreferredSize(new Dimension(290,70));
-		op19.setMaximumSize(new Dimension(290,70));
-
-		JButton op20 = new JButton("<html>" + twoLines7.replaceAll("\n", "<br>") + "</html>");
-		op20.setPreferredSize(new Dimension(290,70));
-		op20.setMaximumSize(new Dimension(290,70));
-
-		JButton op21 = new JButton("<html>" + twoLines8.replaceAll("\n", "<br>") + "</html>");
-		op21.setPreferredSize(new Dimension(290,70));
-		op21.setMaximumSize(new Dimension(290,70));
-
-		JButton op22 = new JButton("Inserimento contributi");
-		op22.setPreferredSize(new Dimension(290,70));
-		op22.setMaximumSize(new Dimension(290,70));
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						Connection conn = getConnection.newConn();
+						try {
+							CallableStatement cs = conn.prepareCall("SELECT * FROM DDIVA WHERE DDIVA.ID = ?");
+							cs.setInt(1, cliente.getIdAdempimento());
+							ResultSet rs = cs.executeQuery();
+							output.setText("DDIVA inserita con successo:\n");						
+							output.append("IVA Vendite"+"  "+"IVA Acquisti"+"\n");
+							output.append(rs.getDouble("ivaVendite")+"  "+rs.getDouble("ivaAcquisti")+"\n");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						cliente.dispose();						
+					}				
+				});		
+			}			
+		});
 
 		JButton op23 = new JButton("Cancellazione cliente da uno studio");
 		op23.setPreferredSize(new Dimension(290,70));
@@ -438,32 +529,10 @@ public class OpFrame extends Frame {
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(op9);
 		panel.add(Box.createVerticalStrut(10));
-		panel.add(op10);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op11);
-		panel.add(Box.createVerticalStrut(10));
 		panel.add(op12);
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(op13);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op14);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op15);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op16);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op17);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op18);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op19);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op20);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op21);
-		panel.add(Box.createVerticalStrut(10));
-		panel.add(op22);
-		panel.add(Box.createVerticalStrut(10));
+		panel.add(Box.createVerticalStrut(10));	
 		panel.add(op23);
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(op24);

@@ -15,14 +15,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class addCertificazioneUnica extends Frame {
+public class registrazioneCliente extends Frame {
 	private String nomeStudio;
 	private int IDclient;
 	private String nomeClient;
 	private String cognomeClient;
 	private String CFcommercialista;
-
-	public addCertificazioneUnica(String title, int x, int y,String nomeStudio) {
+	private Double detrazioni = 0.0;
+	private int idAdempimento;
+	
+	public registrazioneCliente(String title, int x, int y,String nomeStudio) {
 		super(title, x, y);
 		this.nomeStudio = nomeStudio;
 		ArrayList<String> clientiPrivati = new ArrayList<String>();
@@ -34,19 +36,34 @@ public class addCertificazioneUnica extends Frame {
 		listaComm.setFont(new Font("font",Font.BOLD,20));
 		listaComm.setBounds(10,10,270,50);
 		ListaComm.setBounds(280, 20, 200, 30);
-		JLabel ListaClienti = new JLabel("Seleziona un Privato: ");
+		JLabel ListaClienti = new JLabel("Seleziona un Cliente: ");
 		JComboBox listaClienti = new JComboBox();
 		ListaClienti.setFont(listaComm.getFont());
 		ListaClienti.setBounds(10, 50, 250, 50);
 		listaClienti.setBounds(280,60,200,30);
-		JLabel ValoreCert = new JLabel("Inserisci valore CU: ");
-		JTextField valoreCert = new JTextField();
-		ValoreCert.setFont(listaComm.getFont());
-		ValoreCert.setBounds(10, 100, 250, 50);
-		valoreCert.setBounds(280, 110, 200, 30);
+		JLabel InserisciIVA = new JLabel("IVA vendite: ");
+		JTextField inserisciIVA = new JTextField();
+		InserisciIVA.setFont(ListaClienti.getFont());
+		InserisciIVA.setBounds(10,100,250,50);
+		inserisciIVA.setBounds(280, 110, 200, 30);
+		JLabel InserisciIVa = new JLabel("IVA acquisti: ");
+		JTextField inserisciIVa = new JTextField();
+		InserisciIVa.setFont(ListaClienti.getFont());
+		InserisciIVa.setBounds(10, 150, 250, 50);
+		inserisciIVa.setBounds(280, 160, 200, 30);
+		JLabel inseriscidata = new JLabel ("Inserisci data invio: ");
+		JTextField Inseriscidata = new JTextField();
+		inseriscidata.setFont(ListaClienti.getFont());
+		inseriscidata.setBounds(10, 200, 250, 50);
+		Inseriscidata.setBounds(280, 210, 200, 30);
+		JLabel inserisciscadenza = new JLabel("Inserisci scadenza: ");
+		JTextField Inserisciscadenza = new JTextField();
+		inserisciscadenza.setFont(ListaClienti.getFont());
+		inserisciscadenza.setBounds(10, 250, 250, 50);
+		Inserisciscadenza.setBounds(280, 260, 200, 30);
 		JButton Inserisci = new JButton("Inserisci");
 		Inserisci.setFont(listaComm.getFont());
-		Inserisci.setBounds(175,200,150,50);
+		Inserisci.setBounds(175,350,150,50);
 		Connection conn =  getConnection.newConn();
 		try {
 			CallableStatement commercialisti = conn.prepareCall("SELECT nome,cognome,codiceFiscale FROM Commercialista WHERE Commercialista.id_studio = (SELECT id FROM Studio WHERE Studio.nome = ?)");
@@ -87,11 +104,11 @@ public class addCertificazioneUnica extends Frame {
 					e1.printStackTrace();
 				}
 				try {
-					CallableStatement ClientQuery = conn.prepareCall("SELECT nome,cognome FROM Privato,Cliente WHERE Privato.id = Cliente.id AND Cliente.Commercialista_Riferimento = ?");
+					CallableStatement ClientQuery = conn.prepareCall("SELECT codiceFiscale FROM Cliente WHERE Cliente.Commercialista_Riferimento = ?");
 					ClientQuery.setString(1, CFcommercialista);
 					ResultSet rs = ClientQuery.executeQuery();
 					while(rs.next())
-						listaClienti.addItem(rs.getString("nome")+","+rs.getString("cognome"));
+						listaClienti.addItem(rs.getString("codiceFiscale"));
 				}catch(SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -103,13 +120,14 @@ public class addCertificazioneUnica extends Frame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String nomeCliente = (String) listaClienti.getSelectedItem();
-				String[] nomeclient = nomeCliente.split(",");
-				nomeClient = nomeclient[0];
-				cognomeClient = nomeclient[1];
+				//String nomeClients[] = nomeCliente.split(",");
+				//nomeClient = nomeClients[0];
+				//cognomeClient = nomeClients[1];
+				
 				try {
-					CallableStatement ClientQuery = conn.prepareCall("SELECT id FROM Privato WHERE Privato.nome = ? AND Privato.cognome = ?");
-					ClientQuery.setString(1, nomeClient);
-					ClientQuery.setString(2, cognomeClient);
+					CallableStatement ClientQuery = conn.prepareCall("SELECT id FROM Cliente WHERE Cliente.codiceFiscale = ?");
+					ClientQuery.setString(1, nomeCliente);
+					//ClientQuery.setString(2, cognomeClient);
 					ResultSet rs = ClientQuery.executeQuery();
 					if(!rs.next())
 						;
@@ -124,15 +142,22 @@ public class addCertificazioneUnica extends Frame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CU certificazione = new CU(Double.parseDouble(valoreCert.getText()));
+				DDIVA ddiva = new DDIVA("ddiva",2,Inserisciscadenza.getText(),Inseriscidata.getText(),Double.parseDouble(inserisciIVa.getText()),Double.parseDouble(inserisciIVA.getText()));
 				Connection conn = getConnection.newConn();
 				try {
-						CallableStatement cs = conn.prepareCall("{call insertCU(?,?,?,?)}");
-						cs.setInt(1, certificazione.getNumeroCertificazione());
-						cs.setDouble(2,certificazione.getValoreCertificazione());
-						cs.setString(3, nomeClient);
-						cs.setString(4, cognomeClient);
-						cs.execute();									
+						CallableStatement fs = conn.prepareCall("INSERT INTO Riferisce(IDadempimento,IDcliente) VALUES(?,?)");
+						fs.setInt(1, ddiva.getCodiceID());
+						fs.setInt(2, IDclient);
+						fs.executeQuery();
+						CallableStatement cs = conn.prepareCall("{call insertDDIVA(?,?,?,?,?)}");
+						cs.setInt(1, ddiva.getCodiceID());
+						cs.setDouble(2,ddiva.getImportoIVAvendite());
+						cs.setDouble(3, ddiva.getImportoIVAacquisti());
+						cs.setInt(4, ddiva.getCodiceID());
+						cs.setDouble(5,ddiva.getPrezzo());
+						cs.executeQuery();	
+						idAdempimento = ddiva.getCodiceID();
+						
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -146,10 +171,16 @@ public class addCertificazioneUnica extends Frame {
 		panel.add(ListaComm);
 		panel.add(ListaClienti);
 		panel.add(listaClienti);
-		panel.add(ValoreCert);
-		panel.add(valoreCert);
+		/*panel.add(InserisciIVA);
+		panel.add(inserisciIVA);
+		panel.add(InserisciIVa);
+		panel.add(inserisciIVa);
 		panel.add(Inserisci);
-		
+		panel.add(inseriscidata);
+		panel.add(Inseriscidata);
+		panel.add(inserisciscadenza);
+		panel.add(Inserisciscadenza);
+		*/
 		super.add(panel);
 	}
 
@@ -171,6 +202,14 @@ public class addCertificazioneUnica extends Frame {
 
 	public String getCFcommercialista() {
 		return CFcommercialista;
+	}
+
+	public Double getDetrazioni() {
+		return detrazioni;
+	}
+
+	public int getIdAdempimento() {
+		return idAdempimento;
 	}
 	
 	

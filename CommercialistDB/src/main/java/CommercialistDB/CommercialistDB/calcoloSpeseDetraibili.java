@@ -13,16 +13,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-public class addCertificazioneUnica extends Frame {
+public class calcoloSpeseDetraibili extends Frame {
 	private String nomeStudio;
 	private int IDclient;
 	private String nomeClient;
 	private String cognomeClient;
 	private String CFcommercialista;
-
-	public addCertificazioneUnica(String title, int x, int y,String nomeStudio) {
+	private Double detrazioni = 0.0;
+	
+	public calcoloSpeseDetraibili(String title, int x, int y,String nomeStudio) {
 		super(title, x, y);
 		this.nomeStudio = nomeStudio;
 		ArrayList<String> clientiPrivati = new ArrayList<String>();
@@ -39,12 +39,7 @@ public class addCertificazioneUnica extends Frame {
 		ListaClienti.setFont(listaComm.getFont());
 		ListaClienti.setBounds(10, 50, 250, 50);
 		listaClienti.setBounds(280,60,200,30);
-		JLabel ValoreCert = new JLabel("Inserisci valore CU: ");
-		JTextField valoreCert = new JTextField();
-		ValoreCert.setFont(listaComm.getFont());
-		ValoreCert.setBounds(10, 100, 250, 50);
-		valoreCert.setBounds(280, 110, 200, 30);
-		JButton Inserisci = new JButton("Inserisci");
+		JButton Inserisci = new JButton("Calcola");
 		Inserisci.setFont(listaComm.getFont());
 		Inserisci.setBounds(175,200,150,50);
 		Connection conn =  getConnection.newConn();
@@ -103,9 +98,10 @@ public class addCertificazioneUnica extends Frame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String nomeCliente = (String) listaClienti.getSelectedItem();
-				String[] nomeclient = nomeCliente.split(",");
-				nomeClient = nomeclient[0];
-				cognomeClient = nomeclient[1];
+				String nomeClients[] = nomeCliente.split(",");
+				nomeClient = nomeClients[0];
+				cognomeClient = nomeClients[1];
+				
 				try {
 					CallableStatement ClientQuery = conn.prepareCall("SELECT id FROM Privato WHERE Privato.nome = ? AND Privato.cognome = ?");
 					ClientQuery.setString(1, nomeClient);
@@ -124,15 +120,14 @@ public class addCertificazioneUnica extends Frame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CU certificazione = new CU(Double.parseDouble(valoreCert.getText()));
 				Connection conn = getConnection.newConn();
 				try {
-						CallableStatement cs = conn.prepareCall("{call insertCU(?,?,?,?)}");
-						cs.setInt(1, certificazione.getNumeroCertificazione());
-						cs.setDouble(2,certificazione.getValoreCertificazione());
-						cs.setString(3, nomeClient);
-						cs.setString(4, cognomeClient);
-						cs.execute();									
+						CallableStatement cs = conn.prepareCall("{call speseDetraibili(?)}");
+						cs.setInt(1, IDclient);
+						ResultSet rs = cs.executeQuery();			
+						if(rs.next()) {
+							detrazioni = rs.getDouble("detrazioni");				
+						}
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -146,8 +141,6 @@ public class addCertificazioneUnica extends Frame {
 		panel.add(ListaComm);
 		panel.add(ListaClienti);
 		panel.add(listaClienti);
-		panel.add(ValoreCert);
-		panel.add(valoreCert);
 		panel.add(Inserisci);
 		
 		super.add(panel);
@@ -172,7 +165,9 @@ public class addCertificazioneUnica extends Frame {
 	public String getCFcommercialista() {
 		return CFcommercialista;
 	}
-	
-	
 
+	public Double getDetrazioni() {
+		return detrazioni;
+	}
+	
 }

@@ -1,7 +1,7 @@
 package CommercialistDB.CommercialistDB;
 
 public class Cliente {
-	private static Integer ID = 0;
+	private static Integer ID = getLastIDcliente.getID();
 	private String CodiceFiscale;
 	private String Indirizzo;
 	private int id;
@@ -9,14 +9,11 @@ public class Cliente {
 		super();
 		CodiceFiscale = codiceFiscale;
 		Indirizzo = indirizzo;
-		this.id = Cliente.getID();
-		ID++;
-	}
-	private static int getID() {
-		return ID.intValue();
+		this.id = Cliente.ID.intValue();
+		Cliente.ID++;
 	}
 	public int getId() {
-		return this.id;
+		return id;
 	}
 	public String getCodiceFiscale() {
 		return CodiceFiscale;
