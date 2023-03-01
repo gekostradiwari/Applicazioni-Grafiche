@@ -65,8 +65,8 @@ public class OpFrame extends Frame {
 		String twoLines6 ="Inserimento commercialista\n  in un albo";
 		String twoLines7 ="Inserimento incasso\n quote condominiali";
 		String twoLines8 ="Inserimento corso di \n formazione e relativo attestato";
-		String twoLines9 ="Selezionare il nome degli studi i quali"
-				+ "	commercialisti assistono un numero di"
+		String twoLines9 ="Selezionare il nome dei commercialisti i quali"
+				+ "	 assistono un numero di"
 				+ "	clienti maggiore o uguale a 5";
 
 		JButton op1 = new JButton("Emissione fattura");
@@ -453,7 +453,8 @@ public class OpFrame extends Frame {
 				try {
 					CallableStatement cs = conn.prepareCall("{call CalcoloRedditiFabbricati()}");
 					ResultSet rs = cs.executeQuery();
-					output.append(rs.getString("partitaIva")+"  "+rs.getInt("id")+"  "+rs.getDouble("SUM(DDR.redditoFabbricati")+"\n");
+					if(rs.next())
+						output.append(rs.getString("partitaIva")+"  "+rs.getInt("id")+"  "+rs.getDouble("SUM(DDR.redditoFabbricati")+"\n");
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -489,12 +490,13 @@ public class OpFrame extends Frame {
 					public void componentRemoved(ContainerEvent e) {
 						Connection conn = getConnection.newConn();
 						try {
-							CallableStatement cs = conn.prepareCall("SELECT * FROM DDIVA WHERE DDIVA.ID = ?");
-							cs.setInt(1, cliente.getIdAdempimento());
+							CallableStatement cs = conn.prepareCall("SELECT codiceFiscale FROM Cliente WHERE Cliente.id = ?");
+							cs.setInt(1, cliente.getIDclient());
 							ResultSet rs = cs.executeQuery();
-							output.setText("DDIVA inserita con successo:\n");						
-							output.append("IVA Vendite"+"  "+"IVA Acquisti"+"\n");
-							output.append(rs.getDouble("ivaVendite")+"  "+rs.getDouble("ivaAcquisti")+"\n");
+							output.setText("Cliente inserito con successo:\n");						
+							output.append("Codice Fiscale"+"\n");
+							if(rs.next())
+								output.append(rs.getString("codiceFiscale")+"\n");
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -508,10 +510,65 @@ public class OpFrame extends Frame {
 		JButton op23 = new JButton("Cancellazione cliente da uno studio");
 		op23.setPreferredSize(new Dimension(290,70));
 		op23.setMaximumSize(new Dimension(290,70));
+		op23.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				clone.setVisible(false);
+				cancellazioneCliente calc = new cancellazioneCliente("Cancellazione Cliente",500,500,nomeStudio);
+				calc.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						clone.setVisible(true);
+						calc.dispose();
+						super.windowClosed(e);
+					}
+				});	
+				calc.addContainerListener(new ContainerListener() {
+
+					@Override
+					public void componentAdded(ContainerEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void componentRemoved(ContainerEvent e) {
+						calc.dispose();
+						output.setText("Cliente cancellato con successo.\n");						
+					}				
+				});
+				
+			}
+			
+		});
 
 		JButton op24 = new JButton("<html>" + twoLines9.replaceAll("\n", "<br>") + "</html>");
 		op24.setPreferredSize(new Dimension(290,70));
 		op24.setMaximumSize(new Dimension(290,70));
+		op24.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Connection conn  = getConnection.newConn();
+				output.append("Nome"+"  "+"Cognome"+"\n");
+				try {
+					CallableStatement cs = conn.prepareCall("SELECT nome,cognome FROM Commercialista WHERE Commercialista.NumeroClienti >= 5;");
+					ResultSet rs = cs.executeQuery();
+					
+					while(rs.next()) {
+						output.append(rs.getString("nome")+"  "+rs.getString("cognome")+"\n");
+						
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+			
+		});
 		
 		panel.add(op1);
 		panel.add(Box.createVerticalStrut(10));
